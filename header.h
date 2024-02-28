@@ -35,6 +35,6 @@ t_data *create_city(char **splitted);
 int check_ifexist(t_product *products, char **product);
 void add_if_cheap(t_product **products, char **splited);
 void check_exist_or_add(t_data **cities, char **splited, final_cities *result);
-void free_all(dictionary *alphabet);
+void free_all(dictionary **alphabet);
 
 #endif
