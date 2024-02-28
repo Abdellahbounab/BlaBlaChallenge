@@ -202,27 +202,28 @@ void check_exist_or_add(t_data **citiess, char **splited)
 	}
 }
 
-void free_all(dictionary *alphabet)
+void free_all(dictionary alphabet)
 {
 	t_data *cpy;
 	
-	if (alphabet)
+	if (alphabet.head_cities)
 	{
-			while (alphabet->head_cities->head_products)
+		printf("before");
+			while (alphabet.head_cities->head_products)
 			{
-				cpy = alphabet->head_cities->next;
-				free(alphabet->head_cities);
-				alphabet->head_cities = cpy;
+				cpy = alphabet.head_cities->next;
+				free(alphabet.head_cities);
+				alphabet.head_cities = cpy;
 			}
-			while (alphabet->head_cities)
+			while (alphabet.head_cities)
 			{
-				cpy = alphabet->head_cities->next;
-				free(alphabet->head_cities);
-				alphabet->head_cities = cpy;
+				cpy = alphabet.head_cities->next;
+				free(alphabet.head_cities);
+				alphabet.head_cities = cpy;
 			}
+		printf("after");
+
 	}
-	else
-		printf("NOT FOUnd \n");
 }
 
 static int	get_words(char const *s, char c, int *index)
@@ -307,7 +308,7 @@ char	**ft_split(char const *s, char c)
 t_data *get_min_city(dictionary word)
 {
 	t_data *cpy;
-	t_data *saver;
+	t_data *saver = NULL;
 	int min ;
 	
 	if (word.head_cities)
@@ -360,40 +361,38 @@ int main()
 	while (!alphabet[i].head_cities)
 		i++;
 	 t_data *min_res = get_min_city(alphabet[i]);
-	//  t_data *res;
+	 t_data *res;
 	 t_product *get;
-	 printf("%s\n", alphabet[i].head_cities->city);
 	while (i < 26)
 	{
 		if (alphabet[i].head_cities)
 		{
-			t_data *res = get_min_city(alphabet[i]);
-			// printf("%p\n", res->city);
+			res = get_min_city(alphabet[i]);
 			if (res && min_res->total > res->total)
 				min_res = res;
 		}
 		i++;
 	}
-	// f = fopen("output.txt", "wa");
+	f = fopen("output.txt", "wa");
 
-	// fprintf(f ,"%s %.2Lf\n", min_res->city, min_res->total);
-	// get = min_res->head_products;
-	// while (get)
-	// {
-	// 	fprintf(f, "%s %.2Lf\n", get->product_name, get->price);
-	// 	get = get->next;
-	// }
-	// fclose(f);
+	fprintf(f ,"%s %.2Lf\n", min_res->city, min_res->total);
+	get = min_res->head_products;
+	while (get)
+	{
+		fprintf(f, "%s %.2Lf\n", get->product_name, get->price);
+		get = get->next;
+	}
+	fclose(f);
 
-	// i = 0;
-	// while (i < 26)
-	// {
-	// 	printf("here\n");
-	// 		//resultat[i].result = NULL;
-	// 	if (alphabet[i].head_cities)
-	// 		free_all(&alphabet[i]);
-	// 	i++;
-	// }
+	i = 0;
+	while (i < 26)
+	{
+		printf("here\n");
+			//resultat[i].result = NULL;
+		if (alphabet[i].head_cities)
+			free_all(alphabet[i]);
+		i++;
+	}
 	fclose(f);
 }
 

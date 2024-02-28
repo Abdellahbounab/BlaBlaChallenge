@@ -39,7 +39,7 @@ t_data *create_city(char **splitted);
 int check_ifexist(t_product *products, char *product);
 void add_if_cheap(t_product **products, char **splited);
 void check_exist_or_add(t_data **cities, char **splited);
-void free_all(dictionary *alphabet);
+void free_all(dictionary alphabet);
 t_data *sort_min(t_data **citiess);
 
 #endif
