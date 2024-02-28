@@ -30,6 +30,9 @@ t_data *create_city(char **splitted)
 		newp->total = atof(*(splitted + 2));
 		newp->next = NULL;
 		newp->head_products = create_product(*(splitted + 1), newp->total);
+	//	printf("price : %f (%s)\n", newp->total, newp->city);
+
+		return (newp);
 	}
 	else
 		return 0;
@@ -43,6 +46,7 @@ t_product *create_product(char *name, double prix)
 		newp->product_name = strdup(name);
 		newp->price = prix;
 		newp->next = NULL;
+		return (newp);
 	}
 	else
 		return 0;
@@ -60,12 +64,23 @@ int check_ifexist(t_product *producta, char **products)
 	return (0);
 }
 
+void read_cheap(t_product *pds)
+{
+	printf("products-----------------");
+	while (pds)
+	{
+		printf("(%s)%f\n", pds->product_name, pds->price);
+		pds = pds->next;
+	}
+	printf("\n");
+}
+
 void add_if_cheap(t_product **products, char **splited)
 {
 	t_product *cpy = *products;
 	int found = 0;
 	double fprice = atof(*(splited + 2));
-	
+	printf("item in : %s(%f)\n", *(splited + 1),fprice);
 	if (check_ifexist(cpy, splited))
 	{
 		while (cpy)
@@ -103,7 +118,20 @@ void add_if_cheap(t_product **products, char **splited)
 		if (found && strlen_lst(*products) > 5)
 			delete_last_node(products);
 	}
+		read_cheap(*products);
 }
+
+void	read_lst_cities(t_data *citiess)
+{
+	printf("---------cities ---------------");
+	while (citiess)
+	{
+		printf("%s  (%f)", citiess->city, citiess->total);
+		citiess = citiess->next;
+	}
+		printf("\n");
+}
+
 
 void check_exist_or_add(t_data **citiess, char **splited, final_cities *resulta)
 {
@@ -112,41 +140,45 @@ void check_exist_or_add(t_data **citiess, char **splited, final_cities *resulta)
 	if (resulta)
 		min = resulta->result;
 
-	if ((*citiess)->head_products)
+	if (*citiess)
 	{
 		t_data *cpy = *citiess;
+		t_data *saver = cpy;
 		int found = 0;
-		
-		printf("%s\n", cpy->city);
-		
-		while (cpy->next)
+
+		while (cpy)
 		{
 			if (!strcmp(*splited, cpy->city))
 			{
 				found = 1;
 				cpy->total += atof(*(splited + 2));
-				add_if_cheap(&cpy->head_products,splited);
+				add_if_cheap(&cpy->head_products, splited);
 			}
 			if (min && min->total > cpy->total)
 				min = cpy;
 			else if (!min)
 				min = cpy;
+			if (!(cpy->next))
+				saver = cpy;
 			cpy = cpy->next;
+
 		}
 		if(!found)
 		{
 			t_data *mdina = create_city(splited);
-			cpy->next = mdina;
+			saver->next = mdina;
 			if (min && min->total > mdina->total)
 				min = mdina;
 			else if (!min)
 				min = mdina;
 		}
+
 	}
 	else
 	{
 		t_data *mdina = create_city(splited);
 		*citiess = mdina;
+
 		min = mdina;
 	}
 	resulta->result = min;
@@ -252,7 +284,7 @@ int main()
 {
 	FILE *f = fopen("input.txt", "r");
 	char ligne[100];
-	dictionary alphabet[26];
+	dictionary alphabet[26] = {NULL};
 	char **splited;
 	final_cities resultat[26];
 	
@@ -261,7 +293,7 @@ int main()
 		if ((splited = ft_split(ligne, ',')))
 		{
 			alphabet[**splited - 'A'].alpha = **splited;
-			check_exist_or_add(&alphabet[**splited - 'A'].head_cities, splited, &resultat[**splited - 'A']);
+			check_exist_or_add(&alphabet[**splited - 'A'].head_cities,splited, &resultat[**splited - 'A']);
 		}
 		else
 			break;
